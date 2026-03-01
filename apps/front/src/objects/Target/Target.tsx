@@ -1,5 +1,5 @@
 import Konva from "konva";
-import { type FC, useCallback, useEffect, useRef, useState } from "react";
+import { type FC, useCallback, useEffect, useRef } from "react";
 import { Group, Rect } from "react-konva";
 import type { TargetDTO } from "types";
 
@@ -20,25 +20,33 @@ const Target: FC<TargetProps> = ({
   layoutWidth,
   layoutHeight,
 }) => {
-  const [animation, setAnimation] = useState<Konva.Animation>();
+  const animationRef = useRef<Konva.Animation>(null);
   const ref = useRef<Konva.Rect>(null);
   const hitHandler = useCallback(() => {
-    animation?.stop();
+    animationRef.current?.stop();
     if (ref.current) {
       const tween = new Konva.Tween({
         node: ref.current,
         duration: 2,
         y: layoutHeight,
+        onFinish: () => onHit(id),
       });
       setTimeout(() => tween.play(), 500);
     }
-    onHit(id);
-  }, [onHit, id, animation, layoutHeight]);
+  }, [onHit, id, layoutHeight]);
+  const missHandler = useCallback(
+    (id: number) => {
+      animationRef.current?.stop();
+      onMiss(id);
+    },
+    [onMiss],
+  );
 
   useEffect(() => {
     const animation = new Konva.Animation(({ time }) => {
       if (time > duration) {
-        onMiss(id);
+        animation.stop();
+        missHandler(id);
       }
       const position = {
         x: (layoutWidth * time) / duration,
@@ -46,9 +54,9 @@ const Target: FC<TargetProps> = ({
       };
       ref.current?.position(position);
     });
-    setAnimation(animation);
     animation.start();
-  }, [duration, layoutWidth, onMiss, id]);
+    animationRef.current = animation;
+  }, [duration, layoutWidth, id, missHandler]);
 
   return (
     <Group width={layoutWidth} height={HEIGHT}>

@@ -13,10 +13,14 @@ const gameSlice = createSlice({
     addTarget: (state, { payload }: PayloadAction<TargetDTO>) => {
       state.targets.push(payload);
     },
-    hitTarget: (_, { payload }: PayloadAction<TargetDTO["id"]>) => {
+    hitTarget: (state, { payload }: PayloadAction<TargetDTO["id"]>) => {
+      state.score += 10;
+      state.targets = state.targets.filter(({ id }) => id !== payload);
       console.log("target hit", payload);
     },
-    missTarget: (_, { payload }: PayloadAction<TargetDTO["id"]>) => {
+    missTarget: (state, { payload }: PayloadAction<TargetDTO["id"]>) => {
+      state.score -= 10;
+      state.targets = state.targets.filter(({ id }) => id !== payload);
       console.log("target miss", payload);
     },
   },

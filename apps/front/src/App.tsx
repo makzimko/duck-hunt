@@ -1,6 +1,7 @@
 import "./App.css";
 import { useCallback, useEffect } from "react";
 import { Layer, Stage } from "react-konva";
+import Score from "./objects/Score/Score.tsx";
 import Target from "./objects/Target/Target.tsx";
 import { useDispatch, useSelector } from "./store";
 import { addTarget, hitTarget, missTarget } from "./store/game.ts";
@@ -8,6 +9,7 @@ import { addTarget, hitTarget, missTarget } from "./store/game.ts";
 function App() {
   const dispatch = useDispatch();
   const targets = useSelector((state) => state.targets);
+  const score = useSelector((state) => state.score);
 
   const hitHandler = useCallback(
     (id: number) => dispatch(hitTarget(id)),
@@ -27,6 +29,7 @@ function App() {
   return (
     <Stage width={800} height={600}>
       <Layer>
+        <Score value={score} />
         {targets.map((item) => (
           <Target
             key={item.id}

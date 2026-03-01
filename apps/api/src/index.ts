@@ -9,7 +9,7 @@ app.use(logger());
 app.use(async (ctx) => {
   ctx.body = {
     id: Date.now(),
-    duration: 15000,
+    duration: 5000,
     direction: "left",
   } satisfies TargetDTO;
 });
