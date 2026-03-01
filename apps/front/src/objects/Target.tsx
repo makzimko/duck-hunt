@@ -26,6 +26,7 @@ const Target: FC<TargetProps> = ({
   duration,
   layoutWidth,
   layoutHeight,
+  offset,
 }) => {
   const [image] = useImage("/duck.png");
   const audio = useRef(new Audio());
@@ -58,27 +59,27 @@ const Target: FC<TargetProps> = ({
     [onMiss],
   );
 
-  // useEffect(() => {
-  //   if (image) {
-  //     void audio.current.play();
-  //     ref.current?.start();
-  //   }
-  // }, [image]);
+  useEffect(() => {
+    if (image) {
+      void audio.current.play();
+      ref.current?.start();
+    }
+  }, [image]);
 
-  // useEffect(() => {
-  //   const track = new Audio("/quack.mp3");
-  //   track.loop = true;
-  //   void track.play();
-  //
-  //   audio.current = track;
-  //
-  //   return () => {
-  //     if (!audio.current.paused) {
-  //       audio.current.pause();
-  //       audio.current = new Audio();
-  //     }
-  //   };
-  // }, []);
+  useEffect(() => {
+    const track = new Audio("/quack.mp3");
+    track.loop = true;
+    void track.play();
+
+    audio.current = track;
+
+    return () => {
+      if (!audio.current.paused) {
+        audio.current.pause();
+        audio.current = new Audio();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const animation = new Konva.Animation(({ time }) => {
@@ -88,13 +89,13 @@ const Target: FC<TargetProps> = ({
       }
       const position = {
         x: (layoutWidth * time) / duration,
-        y: 50 * Math.cos(time / 300) + HEIGHT / 2,
+        y: 50 * Math.cos(time / 300) + offset,
       };
       ref.current?.position(position);
     });
     animation.start();
     animationRef.current = animation;
-  }, [duration, layoutWidth, id, missHandler]);
+  }, [duration, layoutWidth, id, missHandler, offset]);
 
   return (
     <Group width={layoutWidth} height={HEIGHT}>
