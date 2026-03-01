@@ -58,27 +58,27 @@ const Target: FC<TargetProps> = ({
     [onMiss],
   );
 
-  useEffect(() => {
-    if (image) {
-      void audio.current.play();
-      ref.current?.start();
-    }
-  }, [image]);
+  // useEffect(() => {
+  //   if (image) {
+  //     void audio.current.play();
+  //     ref.current?.start();
+  //   }
+  // }, [image]);
 
-  useEffect(() => {
-    const track = new Audio("/quack.mp3");
-    track.loop = true;
-    void track.play();
-
-    audio.current = track;
-
-    return () => {
-      if (!audio.current.paused) {
-        audio.current.pause();
-        audio.current = new Audio();
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   const track = new Audio("/quack.mp3");
+  //   track.loop = true;
+  //   void track.play();
+  //
+  //   audio.current = track;
+  //
+  //   return () => {
+  //     if (!audio.current.paused) {
+  //       audio.current.pause();
+  //       audio.current = new Audio();
+  //     }
+  //   };
+  // }, []);
 
   useEffect(() => {
     const animation = new Konva.Animation(({ time }) => {

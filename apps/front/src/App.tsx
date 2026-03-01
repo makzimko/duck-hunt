@@ -16,7 +16,7 @@ function App() {
   const [pointer, setPointer] = useState<Konva.Vector2d>({ x: 0, y: 0 });
   const [started, setStarted] = useState(false);
 
-  const { onHit, onMiss, targets, score, start } = useGame();
+  const { onHit, onMiss, targets, start } = useGame();
 
   const moveHandler = useCallback(
     (event: Konva.KonvaEventObject<MouseEvent>) => {
@@ -41,7 +41,6 @@ function App() {
       style={{ cursor: "pointer", background: "#4DA9FF" }}
     >
       <Layer>
-        <Score value={score} />
         <Pointer x={pointer.x} y={pointer.y} />
         {targets.map((item) => (
           <Target
@@ -57,6 +56,7 @@ function App() {
       <Layer>
         <Tile width={WIDTH} height={HEIGHT} />
         <Clouds width={WIDTH} height={HEIGHT} />
+        {started && <Score x={WIDTH * 0.85} y={HEIGHT * 0.8} />}
         {!started && (
           <Text
             text="Click to start"

@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { io, type Socket } from "socket.io-client";
-import type { ScoreDTO, TargetDTO } from "types";
+import type { TargetDTO } from "types";
 import { useDispatch, useSelector } from "./src/store";
 import { addTarget, hitTarget, missTarget } from "./src/store/game.ts";
 
 type Game = {
   targets: TargetDTO[];
-  score: ScoreDTO;
   onHit: (id: number) => void;
   onMiss: (id: number) => void;
   start: () => void;
@@ -16,7 +15,6 @@ const useGame = (): Game => {
   const [socket, setSocket] = useState<Socket>();
   const dispatch = useDispatch();
   const targets = useSelector((state) => state.targets);
-  const score = useSelector((state) => state.score);
 
   const onHit = useCallback(
     (id: number) => {
@@ -47,7 +45,6 @@ const useGame = (): Game => {
 
   return {
     targets,
-    score,
     onHit,
     onMiss,
     start,
