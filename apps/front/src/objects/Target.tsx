@@ -60,7 +60,7 @@ const Target: FC<TargetProps> = ({
 
   return (
     <Group width={layoutWidth} height={HEIGHT}>
-      <Rect width={30} height={30} fill="red" onClick={hitHandler} ref={ref} />
+      <Rect width={50} height={50} fill="red" onClick={hitHandler} ref={ref} />
     </Group>
   );
 };
