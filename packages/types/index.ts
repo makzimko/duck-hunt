@@ -1,1 +1,5 @@
-export type TestResponse = { hello: string };
+export type Target = {
+  id: number;
+  speed: number;
+  direction: "left" | "right";
+};
