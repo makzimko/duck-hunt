@@ -33,7 +33,6 @@ const Pointer: FC<PointerProps> = ({ x, y }) => {
         animation="basic"
         animations={animations}
         frameRate={5}
-        frameIndex={0}
         ref={ref}
       />
     )

@@ -1,7 +1,8 @@
 import Konva from "konva";
-import { type FC, useCallback, useEffect, useRef } from "react";
-import { Group, Rect } from "react-konva";
+import { type FC, useCallback, useEffect, useRef, useState } from "react";
+import { Group, Sprite } from "react-konva";
 import type { TargetDTO } from "types";
+import useImage from "use-image";
 
 type TargetProps = TargetDTO & {
   layoutWidth: number;
@@ -10,7 +11,13 @@ type TargetProps = TargetDTO & {
   onMiss: (id: number) => void;
 };
 
+const WIDTH = 115;
 const HEIGHT = 100;
+
+const animations = {
+  flying: [7, 9, WIDTH, HEIGHT, 7, 145, WIDTH, HEIGHT],
+  hit: [7, 260, WIDTH, WIDTH],
+};
 
 const Target: FC<TargetProps> = ({
   onHit,
@@ -20,10 +27,13 @@ const Target: FC<TargetProps> = ({
   layoutWidth,
   layoutHeight,
 }) => {
+  const [image, status] = useImage("/duck.png");
+  const [targetState, setTargetState] = useState<"flying" | "hit">("flying");
   const animationRef = useRef<Konva.Animation>(null);
-  const ref = useRef<Konva.Rect>(null);
+  const ref = useRef<Konva.Sprite>(null);
   const hitHandler = useCallback(() => {
     animationRef.current?.stop();
+    setTargetState("hit");
     if (ref.current) {
       const tween = new Konva.Tween({
         node: ref.current,
@@ -43,6 +53,12 @@ const Target: FC<TargetProps> = ({
   );
 
   useEffect(() => {
+    if (status === "loaded") {
+      ref.current?.start();
+    }
+  }, [status]);
+
+  useEffect(() => {
     const animation = new Konva.Animation(({ time }) => {
       if (time > duration) {
         animation.stop();
@@ -60,7 +76,16 @@ const Target: FC<TargetProps> = ({
 
   return (
     <Group width={layoutWidth} height={HEIGHT}>
-      <Rect width={50} height={50} fill="red" onClick={hitHandler} ref={ref} />
+      {image && (
+        <Sprite
+          image={image}
+          animation={targetState}
+          animations={animations}
+          frameRate={2}
+          ref={ref}
+          onClick={hitHandler}
+        />
+      )}
     </Group>
   );
 };
