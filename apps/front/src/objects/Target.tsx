@@ -27,6 +27,7 @@ const Target: FC<TargetProps> = ({
   layoutWidth,
   layoutHeight,
   offset,
+  direction,
 }) => {
   const [image] = useImage("/duck.png");
   const audio = useRef(new Audio());
@@ -88,7 +89,7 @@ const Target: FC<TargetProps> = ({
         missHandler(id);
       }
       const position = {
-        x: (layoutWidth * time) / duration,
+        x: ((layoutWidth + WIDTH * 2) * time) / duration - WIDTH,
         y: 50 * Math.cos(time / 300) + offset,
       };
       ref.current?.position(position);
@@ -98,7 +99,12 @@ const Target: FC<TargetProps> = ({
   }, [duration, layoutWidth, id, missHandler, offset]);
 
   return (
-    <Group width={layoutWidth} height={HEIGHT}>
+    <Group
+      width={layoutWidth}
+      height={HEIGHT}
+      scaleX={direction === "left" ? -1 : 1}
+      x={direction === "left" ? 1000 : 0}
+    >
       {image && (
         <Sprite
           image={image}

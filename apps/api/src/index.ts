@@ -26,14 +26,17 @@ io.on("connection", (socket) => {
   const sendRandomTarget = () => {
     const target: TargetDTO = {
       id: Date.now(),
-      direction: "left",
+      direction: Math.random() > 0.5 ? "left" : "right",
       duration: 5000,
       offset: Math.random() * 250,
     };
 
-    setTimeout(() => {
-      socket.emit("target", target);
-    }, 1000);
+    setTimeout(
+      () => {
+        socket.emit("target", target);
+      },
+      3000 + Math.random() * 5000,
+    );
   };
 
   sendRandomTarget();

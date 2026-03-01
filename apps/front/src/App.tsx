@@ -1,9 +1,10 @@
 import "./App.css";
 import type Konva from "konva";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Layer, Stage, Text } from "react-konva";
 import useGame from "../useGame";
 import Clouds from "./objects/Clouds";
+import Dog, { type Action } from "./objects/Dog.tsx";
 import Pointer from "./objects/Pointer";
 import Score from "./objects/Score";
 import Target from "./objects/Target";
@@ -17,6 +18,23 @@ function App() {
   const [started, setStarted] = useState(false);
 
   const { onHit, onMiss, targets, start } = useGame();
+  const dogAction = useRef<(action: Action) => void>(null);
+
+  const hitHandler = useCallback(
+    (id: number) => {
+      onHit(id);
+      dogAction.current?.("catch");
+    },
+    [onHit],
+  );
+
+  const missHandler = useCallback(
+    (id: number) => {
+      onMiss(id);
+      dogAction.current?.("cry");
+    },
+    [onMiss],
+  );
 
   const moveHandler = useCallback(
     (event: Konva.KonvaEventObject<MouseEvent>) => {
@@ -48,8 +66,8 @@ function App() {
             {...item}
             layoutWidth={WIDTH}
             layoutHeight={HEIGHT}
-            onHit={onHit}
-            onMiss={onMiss}
+            onHit={hitHandler}
+            onMiss={missHandler}
           />
         ))}
       </Layer>
@@ -70,6 +88,7 @@ function App() {
             onClick={startHandler}
           />
         )}
+        <Dog x={50} y={HEIGHT - 148} action={dogAction} />
       </Layer>
     </Stage>
   );
