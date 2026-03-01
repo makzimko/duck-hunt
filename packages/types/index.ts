@@ -1,5 +1,5 @@
-export type Target = {
+export type TargetDTO = {
   id: number;
-  speed: number;
+  duration: number;
   direction: "left" | "right";
 };
