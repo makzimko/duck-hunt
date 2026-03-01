@@ -6,7 +6,7 @@ import type { TargetDTO } from "types";
 const app = new Koa();
 app.use(logger());
 
-const server = app.listen(3000, () => {
+const server = app.listen(4000, () => {
   console.log("Server started on port 3000");
 });
 

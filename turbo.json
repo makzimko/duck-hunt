@@ -5,6 +5,9 @@
       "dependsOn": ["^dev"],
       "persistent": true,
       "cache": false
+    },
+    "prod": {
+      "dependsOn": ["^prod"]
     }
   }
 }
