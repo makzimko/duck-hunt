@@ -9,6 +9,7 @@ type Game = {
   score: ScoreDTO;
   onHit: (id: number) => void;
   onMiss: (id: number) => void;
+  start: () => void;
 };
 
 const useGame = (): Game => {
@@ -16,11 +17,6 @@ const useGame = (): Game => {
   const dispatch = useDispatch();
   const targets = useSelector((state) => state.targets);
   const score = useSelector((state) => state.score);
-
-  useEffect(() => {
-    const socket = io();
-    setSocket(socket);
-  }, []);
 
   const onHit = useCallback(
     (id: number) => {
@@ -38,6 +34,11 @@ const useGame = (): Game => {
     [dispatch, socket?.emit],
   );
 
+  const start = useCallback(() => {
+    const socket = io();
+    setSocket(socket);
+  }, []);
+
   useEffect(() => {
     if (socket) {
       socket.on("target", (target) => dispatch(addTarget(target)));
@@ -49,6 +50,7 @@ const useGame = (): Game => {
     score,
     onHit,
     onMiss,
+    start,
   };
 };
 

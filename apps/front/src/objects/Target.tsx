@@ -27,13 +27,18 @@ const Target: FC<TargetProps> = ({
   layoutWidth,
   layoutHeight,
 }) => {
-  const [image, status] = useImage("/duck.png");
+  const [image] = useImage("/duck.png");
+  const audio = useRef(new Audio());
   const [targetState, setTargetState] = useState<"flying" | "hit">("flying");
   const animationRef = useRef<Konva.Animation>(null);
   const ref = useRef<Konva.Sprite>(null);
   const hitHandler = useCallback(() => {
     animationRef.current?.stop();
     setTargetState("hit");
+    audio.current.loop = false;
+    audio.current = new Audio("/shot.mp3");
+    audio.current.loop = false;
+    void audio.current.play();
     if (ref.current) {
       const tween = new Konva.Tween({
         node: ref.current,
@@ -46,6 +51,7 @@ const Target: FC<TargetProps> = ({
   }, [onHit, id, layoutHeight]);
   const missHandler = useCallback(
     (id: number) => {
+      audio.current.loop = false;
       animationRef.current?.stop();
       onMiss(id);
     },
@@ -53,10 +59,26 @@ const Target: FC<TargetProps> = ({
   );
 
   useEffect(() => {
-    if (status === "loaded") {
+    if (image) {
+      void audio.current.play();
       ref.current?.start();
     }
-  }, [status]);
+  }, [image]);
+
+  useEffect(() => {
+    const track = new Audio("/quack.mp3");
+    track.loop = true;
+    void track.play();
+
+    audio.current = track;
+
+    return () => {
+      if (!audio.current.paused) {
+        audio.current.pause();
+        audio.current = new Audio();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const animation = new Konva.Animation(({ time }) => {

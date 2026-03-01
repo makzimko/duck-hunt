@@ -1,7 +1,7 @@
 import "./App.css";
 import type Konva from "konva";
 import { useCallback, useState } from "react";
-import { Layer, Stage } from "react-konva";
+import { Layer, Stage, Text } from "react-konva";
 import useGame from "../useGame";
 import Clouds from "./objects/Clouds";
 import Pointer from "./objects/Pointer";
@@ -14,8 +14,10 @@ const HEIGHT = 600;
 
 function App() {
   const [pointer, setPointer] = useState<Konva.Vector2d>({ x: 0, y: 0 });
+  const [started, setStarted] = useState(false);
 
-  const { onHit, onMiss, targets, score } = useGame();
+  const { onHit, onMiss, targets, score, start } = useGame();
+
   const moveHandler = useCallback(
     (event: Konva.KonvaEventObject<MouseEvent>) => {
       const stage = event.target.getStage();
@@ -26,6 +28,10 @@ function App() {
     },
     [],
   );
+  const startHandler = useCallback(() => {
+    start();
+    setStarted(true);
+  }, [start]);
 
   return (
     <Stage
@@ -51,6 +57,19 @@ function App() {
       <Layer>
         <Tile width={WIDTH} height={HEIGHT} />
         <Clouds width={WIDTH} height={HEIGHT} />
+        {!started && (
+          <Text
+            text="Click to start"
+            fontSize={50}
+            fontFamily="courier new"
+            fontStyle="bold"
+            align="center"
+            width={WIDTH}
+            height={HEIGHT}
+            verticalAlign="middle"
+            onClick={startHandler}
+          />
+        )}
       </Layer>
     </Stage>
   );
